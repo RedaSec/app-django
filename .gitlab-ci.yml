@@ -1,0 +1,17 @@
+stages:
+    - test
+    - build
+    - deploy
+
+variables:
+    - IMAGE_NAME: "django-demo-app"
+    - IMAGE_TAG: "latest"
+
+
+run_tests:
+    image: python:3.11
+    before_script:
+        - pip install pipenv
+        - pipenv install
+    script:
+        - python manage.py test
