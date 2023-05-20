@@ -4,11 +4,12 @@ stages:
     - deploy
 
 variables:
-    - IMAGE_NAME: "django-demo-app"
-    - IMAGE_TAG: "latest"
+    IMAGE_NAME: "django-demo-app"
+    IMAGE_TAG: "latest"
 
 
 run_tests:
+    stage: test
     image: python:3.11
     before_script:
         - pip install pipenv
