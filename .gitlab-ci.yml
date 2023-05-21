@@ -40,6 +40,6 @@ deploy:
     script:
         - ssh -o StrictHostKeyChecking=no -p 1999 -i $SSH_KEY_FILE deployer@65.109.10.128 "
             cd runner_files &&
-            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD &&
+            docker login -u $DOCKERHUB_USERNAME -p '$DOCKERHUB_PASSWORD' &&
             docker-compose down &&
             docker-compose up -d"
