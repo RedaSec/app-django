@@ -36,6 +36,6 @@ deploy:
     before_script:
         - apk add --update --no-cache openssh
         - chmod 400 $SSH_KEY_FILE
-        - scp -P 1999 -o StrictHostKeyChecking=no -i $SSH_KEY_FILE ./docker-compose.yml deployer@65.109.10.128:/home/deployer/runner
+        - scp -P 1999 -o StrictHostKeyChecking=no -i $SSH_KEY_FILE ./docker-compose.yml deployer@65.109.10.128:/home/deployer/runner/
     script:
         - echo "Deploying!"
