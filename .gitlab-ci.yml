@@ -30,3 +30,7 @@ build_image:
         - docker image build -t $IMAGE_NAME:$IMAGE_TAG .
         - docker image push $IMAGE_NAME:$IMAGE_TAG
 
+deploy:
+    satge: deploy
+    script:
+        - echo "Deploying!"
