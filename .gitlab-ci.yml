@@ -32,7 +32,7 @@ build_image:
 
 deploy:
     stage: deploy
-    image: alpine:latest
+    image: ubuntu:latest
     before_script:
         - scp -o StricHostKeyChecking=no -i $SSH_KEY_FILE ./docker-compose.yml deployer@65.109.10.128:/home/deployer/runner -p 1999
     script:
