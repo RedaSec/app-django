@@ -4,7 +4,7 @@ stages:
     - deploy
 
 variables:
-    IMAGE_NAME: "django-demo-app"
+    IMAGE_NAME: "faresi/django-demo-app"
     IMAGE_TAG: "latest"
 
 
