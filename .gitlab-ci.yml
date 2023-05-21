@@ -36,6 +36,10 @@ deploy:
     before_script:
         - apk add --update --no-cache openssh
         - chmod 400 $SSH_KEY_FILE
-        - scp -P 1999 -o StrictHostKeyChecking=no -i $SSH_KEY_FILE ./docker-compose.yml deployer@65.109.10.128:/home/deployer/runner/
+        - scp -P 1999 -o StrictHostKeyChecking=no -i $SSH_KEY_FILE ./docker-compose.yml deployer@65.109.10.128:/home/deployer/runner_dir/docker-compose.yml
     script:
-        - echo "Deploying!"
+        - ssh -o StrictHostKeyChecking=no -p -i $SSH_KEY_FILE 1999 deployer@65.109.10.128 "
+            cd runner_dir &&
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD &&
+            docker-compose down &&
+            docker-compose up -d"

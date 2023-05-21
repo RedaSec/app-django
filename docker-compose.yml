@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   web:
-    build: .
+    image: faresi/django-demo-app:latest
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "80:8000"
