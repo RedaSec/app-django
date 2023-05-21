@@ -32,5 +32,6 @@ build_image:
 
 deploy:
     stage: deploy
+    image: alpine:latest
     script:
         - echo "Deploying!"
