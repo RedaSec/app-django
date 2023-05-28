@@ -5,9 +5,10 @@ services:
   web:
     image: faresi/django-demo-app:latest
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    ports:
-      - "80:8000"
     restart: always
+    labels:
+      - traefik.http.routers.web-service.rule=Host(`localhost`)
+      - traefik.http.services.web-service.loadbalancer.server.port=8000
     environment:
       - DJANGO_DEBUG=TRUE
       - DJANGO_SECURE_SSL_REDIRECT=TRUE
@@ -20,10 +21,25 @@ services:
       - DJANGO_HOST_NAME=myhostname
     depends_on:
       - db
+      - traefik
     networks:
       - django_app_net
+    # ports:
+    #   - "80:8000"
     # volumes:
     #   - .:/django_app
+
+  traefik:
+    image: traefik:v2.10
+    command: --api.insecure=true --providers.docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+    networks:
+      - django_app_net
 
   db:
     image: mysql:8
