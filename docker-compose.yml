@@ -7,7 +7,7 @@ services:
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     restart: always
     labels:
-      - traefik.http.routers.web-service.rule=Host(`localhost`)
+      - traefik.http.routers.web-service.rule=Host(`65.109.10.128`)
       - traefik.http.services.web-service.loadbalancer.server.port=8000
     environment:
       - DJANGO_DEBUG=TRUE
@@ -31,10 +31,14 @@ services:
 
   traefik:
     image: traefik:v2.10
-    command: --api.insecure=true --providers.docker
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --entrypoints.web.address=:80
+      - --entrypoints.traefik.address=:9090
     ports:
       - "80:80"
-      - "9090:8080"
+      - "9090:9090"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
