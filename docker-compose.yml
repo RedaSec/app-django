@@ -1,5 +1,6 @@
 version: "3.8"
 
+
 services:
   web:
     image: faresi/django-demo-app:latest
@@ -15,13 +16,15 @@ services:
       - DJANGO_SECURE_HSTS_SECONDS=31536000
       - DJANGO_SESSION_COOKIE_SECURE=TRUE
       - DJANGO_CSRF_COOKIE_SECURE=TRUE
-      - DJANGO_SECRET_KEY=vy5yralfkenfjkensqweoi82345snf4wzbfx__sqfn'qweg$$fsefn200iiirrwo05epteqq757n
+      - DJANGO_SECRET_KEY=vy5yralfkenfjkensqweoi82345snf4wzbfx__sqfn
       - DJANGO_HOST_NAME=myhostname
     depends_on:
       - db
+    networks:
+      - django_app_net
     # volumes:
     #   - .:/django_app
-    
+
   db:
     image: mysql:8
     volumes:
@@ -32,6 +35,14 @@ services:
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=testpass123
       - MYSQL_TCP_PORT=3306
+    networks:
+      - django_app_net
+
+
+networks:
+  django_app_net:
+    name: django_app_net
+
 
 volumes:
   mysql_data:
