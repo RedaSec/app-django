@@ -17,7 +17,7 @@ services:
       - DJANGO_SECURE_HSTS_SECONDS=31536000
       - DJANGO_SESSION_COOKIE_SECURE=TRUE
       - DJANGO_CSRF_COOKIE_SECURE=TRUE
-      - DJANGO_SECRET_KEY=vy5yralfkenfjkensqweoi82345snf4wzbfx__sqfn
+      - DJANGO_SECRET_KEY=vy5yralfkenfjkensqweoi82345snf4wzbfx
       - DJANGO_HOST_NAME=myhostname
     depends_on:
       - db
@@ -37,7 +37,6 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      # - ./traefik/traefik.yml:/etc/traefik/traefik.yml
     networks:
       - django_app_net
 
