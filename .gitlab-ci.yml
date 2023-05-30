@@ -19,6 +19,8 @@ run_tests:
 
 build_image:
     stage: build
+    only:
+        - main
     image: docker:24.0-cli
     services:
         - docker:24.0-dind
@@ -32,6 +34,8 @@ build_image:
 
 deploy:
     stage: deploy
+    only:
+        - main
     image: alpine:latest
     before_script:
         - apk add --update --no-cache openssh
@@ -42,4 +46,5 @@ deploy:
             cd runner_files &&
             docker login -u $DOCKERHUB_USERNAME -p '$DOCKERHUB_PASSWORD' &&
             docker compose down &&
-            docker compose up -d"
+            docker compose up -d &&
+            docker system prune"
