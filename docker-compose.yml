@@ -3,14 +3,12 @@ version: "3.8"
 
 services:
   web:
-    # image: faresi/django-demo-app:latest
-    build: .
-    container_name: my_django_app
+    image: faresi/django-demo-app:latest
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     restart: always
-    # labels:
-    #   - traefik.http.routers.web-service.rule=Host(`65.109.10.128`)
-    #   - traefik.http.services.web-service.loadbalancer.server.port=8000
+    labels:
+      - traefik.http.routers.web-service.rule=Host(`65.109.10.128`)
+      - traefik.http.services.web-service.loadbalancer.server.port=8000
     environment:
       - DJANGO_DEBUG=TRUE
       - DJANGO_SECURE_SSL_REDIRECT=TRUE
@@ -21,62 +19,49 @@ services:
       - DJANGO_CSRF_COOKIE_SECURE=TRUE
       - DJANGO_SECRET_KEY=vy5yralfkenfjkensqweoi82345snf4wzbfx
       - DJANGO_HOST_NAME=myhostname
-    # depends_on:
-    #   - db
-    #   - traefik
-    # networks:
-    #   - django_app_net
+    depends_on:
+      - db
+      - traefik
+    networks:
+      - django_app_net
     # ports:
     #   - "80:8000"
     # volumes:
     #   - .:/django_app
+
+  traefik:
+    image: traefik:v2.10
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --entrypoints.web.address=:80
+      - --entrypoints.traefik.address=:9090
     ports:
-      - "8001:8000"
+      - "80:80"
+      - "9090:9090"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - proxy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
-      - "traefik.http.routers.api.rule=Host(`farsi.gizmoyab.com`)"
-      - "traefik.http.services.api.loadbalancer.server.port=8000"
-      - "traefik.http.routers.api.entrypoints=web"
+      - django_app_net
+
+  db:
+    image: mysql:8
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass123
+      - MYSQL_DATABASE=mysql-db
+      - MYSQL_USER=mysqluser
+      - MYSQL_PASSWORD=testpass123
+      - MYSQL_TCP_PORT=3306
+    networks:
+      - django_app_net
+
+
 networks:
-  proxy:
-    external: true
-
-#   traefik:
-#     image: traefik:v2.10
-#     command:
-#       - --api.insecure=true
-#       - --providers.docker
-#       - --entrypoints.web.address=:80
-#       - --entrypoints.traefik.address=:9090
-#     ports:
-#       - "80:80"
-#       - "9090:9090"
-#     volumes:
-#       - /var/run/docker.sock:/var/run/docker.sock
-#     networks:
-#       - django_app_net
-
-#   db:
-#     image: mysql:8
-#     volumes:
-#       - mysql_data:/var/lib/mysql
-#     environment:
-#       - MYSQL_ROOT_PASSWORD=rootpass123
-#       - MYSQL_DATABASE=mysql-db
-#       - MYSQL_USER=mysqluser
-#       - MYSQL_PASSWORD=testpass123
-#       - MYSQL_TCP_PORT=3306
-#     networks:
-#       - django_app_net
+  django_app_net:
+    name: django_app_net
 
 
-# networks:
-#   django_app_net:
-#     name: django_app_net
-
-
-# volumes:
-#   mysql_data:
+volumes:
+  mysql_data:
