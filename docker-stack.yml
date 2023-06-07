@@ -1,0 +1,44 @@
+version: "3.8"
+
+
+services:
+  web:
+    image: faresi/django-demo-app:latest
+    ports:
+      - target: 8000
+        published: 8010
+        mode: overlay
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+    
+    # container_name: my_django_app
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    # restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.api.rule=Host(`65.109.10.128`)"
+      - "traefik.http.services.api.loadbalancer.server.port=8000"
+      - "traefik.http.routers.api.entrypoints=web"
+    environment:
+      - DJANGO_DEBUG=TRUE
+      - DJANGO_SECURE_SSL_REDIRECT=TRUE
+      - DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS=TRUE
+      - DJANGO_SECURE_HSTS_PRELOAD=TRUE
+      - DJANGO_SECURE_HSTS_SECONDS=31536000
+      - DJANGO_SESSION_COOKIE_SECURE=TRUE
+      - DJANGO_CSRF_COOKIE_SECURE=TRUE
+      - DJANGO_SECRET_KEY=vy5yralfkenfjkensqweoi82345snf4wzbfx
+      - DJANGO_HOST_NAME=myhostname
+    # volumes:
+    #   - .:/django_app
+    # ports:
+    #   - "8001:8000"
+    # networks:
+    #   - proxy
+  
+# networks:
+#   proxy:
+#     external: true
